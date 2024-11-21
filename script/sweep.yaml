@@ -1,0 +1,21 @@
+program: src/main.py
+method: bayes
+metric:
+  name: val/psnr
+  goal: maximize
+parameters:
+  dataset.near:
+    min: 0.1
+    max: 2.0
+    distribution: uniform
+  dataset.far:
+    min: 2.0
+    max: 5.0
+    distribution: uniform
+  +experiment:
+    value: custom
+command:
+  - ${env}
+  - python
+  - ${program}
+  - ${args_no_hyphens}
