@@ -6,8 +6,8 @@ defaults:
   - loss: [mse]
 
 wandb:
-  project: mvsplat
-  entity: placeholder
+  project: yaicon-3-5gs
+  entity: pljh0906
   name: placeholder
   mode: disabled
   id: null
@@ -16,6 +16,8 @@ mode: train
 
 dataset:
   overfit_to_scene: null
+  near: 1.0
+  far: 3.0  
 
 data_loader:
   # Avoid having to spin up new processes to print out visualizations.
@@ -25,7 +27,7 @@ data_loader:
     batch_size: 4
     seed: 1234
   test:
-    num_workers: 4
+    num_workers: 2
     persistent_workers: false
     batch_size: 1
     seed: 2345

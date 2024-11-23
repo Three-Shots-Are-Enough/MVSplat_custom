@@ -15,6 +15,10 @@ from pytorch_lightning.callbacks import (
 )
 from pytorch_lightning.loggers.wandb import WandbLogger
 
+torch.cuda.empty_cache()
+torch.backends.cudnn.benchmark = True
+torch.set_float32_matmul_precision('high')
+
 # Configure beartype and jaxtyping.
 with install_import_hook(
     ("src",),
@@ -42,6 +46,47 @@ def cyan(text: str) -> str:
     config_name="main",
 )
 def train(cfg_dict: DictConfig):
+
+    torch.cuda.empty_cache()
+    torch.backends.cudnn.benchmark = True
+    torch.backends.cudnn.deterministic = True
+    
+    if torch.cuda.is_available():
+        torch.cuda.set_per_process_memory_fraction(0.4)
+        sweep_config = {}
+    
+    if os.environ.get('WANDB_SWEEP_ID'):
+        print("Running as part of a sweep")
+        import wandb
+        wandb.init()
+        sweep_config = dict(wandb.config)
+        print("Sweep config:", sweep_config)
+    
+    if sweep_config:
+        near = sweep_config.get('near')
+        far = sweep_config.get('far')
+        if near is not None:
+            print(f"Updating near from {cfg_dict.dataset.near} to {near}")
+            OmegaConf.update(cfg_dict, "dataset.near", float(near))
+        if far is not None:
+            print(f"Updating far from {cfg_dict.dataset.far} to {far}")
+            OmegaConf.update(cfg_dict, "dataset.far", float(far))
+    
+    if not os.environ.get('WANDB_SWEEP_ID') and cfg_dict.wandb.mode != "disabled":
+        wandb.init(
+            project=cfg_dict.wandb.project,
+            entity=cfg_dict.wandb.entity,
+            name=cfg_dict.wandb.name,
+            config=OmegaConf.to_container(cfg_dict, resolve=True)
+        )
+    
+    print("Final config - near:", cfg_dict.dataset.near)
+    print("Final config - far:", cfg_dict.dataset.far)
+
+    print("Config dict after update:", cfg_dict)
+    print("Dataset near value:", cfg_dict.dataset.near)
+    print("Dataset far value:", cfg_dict.dataset.far)
+    
     cfg = load_typed_root_config(cfg_dict)
     set_cfg(cfg_dict)
 
@@ -89,11 +134,11 @@ def train(cfg_dict: DictConfig):
     # Set up checkpointing.
     callbacks.append(
         ModelCheckpoint(
-            output_dir / "checkpoints",
+            str(output_dir / "checkpoints"),
             every_n_train_steps=cfg.checkpointing.every_n_train_steps,
             save_top_k=cfg.checkpointing.save_top_k,
             monitor="info/global_step",
-            mode="max",  # save the lastest k ckpt, can do offline test later
+            mode="max",  # save the latest k ckpt, can do offline test later
         )
     )
     for cb in callbacks:
@@ -138,7 +183,7 @@ def train(cfg_dict: DictConfig):
         # e.g., fine-tune from the released weights on other datasets
         model_wrapper = ModelWrapper.load_from_checkpoint(
             checkpoint_path, **model_kwargs, strict=True)
-        print(cyan(f"Loaded weigths from {checkpoint_path}."))
+        print(cyan(f"Loaded weights from {checkpoint_path}."))
     else:
         model_wrapper = ModelWrapper(**model_kwargs)
 
@@ -161,7 +206,4 @@ def train(cfg_dict: DictConfig):
 
 
 if __name__ == "__main__":
-    warnings.filterwarnings("ignore")
-    torch.set_float32_matmul_precision('high')
-
     train()

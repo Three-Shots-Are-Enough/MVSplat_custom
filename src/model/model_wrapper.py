@@ -220,6 +220,7 @@ class ModelWrapper(LightningModule):
 
         # compute scores
         if self.test_cfg.compute_scores:
+            
             if batch_idx < self.test_cfg.eval_time_skip_steps:
                 self.time_skip_steps_dict["encoder"] += 1
                 self.time_skip_steps_dict["decoder"] += v
@@ -241,6 +242,13 @@ class ModelWrapper(LightningModule):
             self.test_step_outputs[f"lpips"].append(
                 compute_lpips(rgb_gt, rgb).mean().item()
             )
+            psnr_val = compute_psnr(rgb_gt, rgb).mean().item()
+            ssim_val = compute_ssim(rgb_gt, rgb).mean().item()
+            lpips_val = compute_lpips(rgb_gt, rgb).mean().item()
+
+            self.log("test/psnr", psnr_val)
+            self.log("test/ssim", ssim_val)
+            self.log("test/lpips", lpips_val)
 
     def on_test_end(self) -> None:
         name = get_cfg()["wandb"]["name"]

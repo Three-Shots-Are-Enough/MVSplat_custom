@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Literal, Optional, Type, TypeVar
+from typing import Literal, Optional, Type, TypeVar, Any
 
 from dacite import Config, from_dict
 from omegaconf import DictConfig, OmegaConf
@@ -54,6 +54,7 @@ class RootCfg:
 
 TYPE_HOOKS = {
     Path: Path,
+    float: lambda x: float(x) if isinstance(x, str) else x,
 }
 
 
@@ -65,11 +66,16 @@ def load_typed_config(
     data_class: Type[T],
     extra_type_hooks: dict = {},
 ) -> T:
-    return from_dict(
+    print("Debug - Input config:", cfg)  # 디버깅용
+    
+    result = from_dict(
         data_class,
         OmegaConf.to_container(cfg),
         config=Config(type_hooks={**TYPE_HOOKS, **extra_type_hooks}),
     )
+    
+    print("Debug - Converted config:", result)  # 디버깅용
+    return result
 
 
 def separate_loss_cfg_wrappers(joined: dict) -> list[LossCfgWrapper]:

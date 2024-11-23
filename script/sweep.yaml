@@ -1,21 +1,23 @@
-program: src/main.py
 method: bayes
 metric:
-  name: val/psnr
+  name: test/ssim
   goal: maximize
 parameters:
-  dataset.near:
+  near:
     min: 0.1
     max: 2.0
     distribution: uniform
-  dataset.far:
+  far:
     min: 2.0
-    max: 5.0
+    max: 30.0
     distribution: uniform
-  +experiment:
-    value: custom
 command:
-  - ${env}
   - python
-  - ${program}
-  - ${args_no_hyphens}
+  - src/main.py
+  - +experiment=custom
+  - checkpointing.load=checkpoints/re10k.ckpt
+  - mode=test
+  - dataset/view_sampler=evaluation
+  - dataset.view_sampler.index_path=assets/evaluation_index_custom.json
+  - test.compute_scores=true
+  - output_dir=outputs/test/yaicon-3-5gs/custom

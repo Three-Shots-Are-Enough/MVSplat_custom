@@ -120,7 +120,7 @@ class DatasetRE10k(IterableDataset):
                 example = chunk[run_idx // times_per_scene]
                 
                 # DEBUG: Check the determinant of the rotation matrix before 'convert_poses'
-                temp_rotation_matrix = torch.tensor(example["cameras"][0][6:15]).reshape(3, 3)
+                temp_rotation_matrix = example["cameras"][0][6:15].clone().detach().reshape(3, 3)
                 print("[DEBUG] print flattened camera matrix 1:", example["cameras"][0])
                 print("[DEBUG] src/dataset/dataset_re10k.py: Determinant of example['cameras']:", torch.det(temp_rotation_matrix))
                 print("[DEBUG] src/dataset/dataset_re10k.py: example['cameras'] [0]:", temp_rotation_matrix)

@@ -35,6 +35,11 @@ pip install torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 --index-url https
 pip install -r requirements.txt
 ```
 
+```bash
+# download the backbone pretrained weight from unimath and save to 'checkpoints/'
+wget 'https://s3.eu-central-1.amazonaws.com/avg-projects/unimatch/pretrained/gmdepth-scale1-resumeflowthings-scannet-5d9d7964.pth' -P checkpoints
+```
+
 ## Inference script
 
 ```bash
@@ -47,6 +52,34 @@ test.compute_scores=true \
 output_dir=outputs/test/mipnerf
 ```
 
+## Wandb Parameter Sweep Script
+
+```bash
+wandb login # You need your own wandb workspace API Key to login
+wandb init
+wandb sweep script/sweep.yaml
+
+## After getting the sweep ID, you should change the ID in sweep_cloud.sh
+bash script/sweep_cloud.sh
+```
+
+#### Caution
+
+- You need to change the wandb config setting on scripts
+
+```bash
+# config/experiments/coustom.yaml
+wandb:
+  project: yaicon-3-5gs
+  name: custom
+  tags: [custom, 512x512]
+  mode: online
+  entity: <your-entity>
+```
+
+```bash
+
+```
 
 ## Acknowledgements
 

@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# wandb directory
+wandb/
+
 # C extensions
 *.so
 
@@ -162,11 +165,13 @@ cython_debug/
 
 /datasets
 /dataset_cache
+/data/yaicon_book_dynamic/*
 
 # Outputs
 /outputs
 /lightning_logs
 /checkpoints
+*.out
 
 .bashrc
 /launcher_venv

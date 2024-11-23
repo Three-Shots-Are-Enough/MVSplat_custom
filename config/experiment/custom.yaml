@@ -4,10 +4,14 @@ defaults:
   - override /dataset: re10k
   - override /model/encoder: costvolume
   - override /loss: [mse, lpips]
+  - override /dataset/view_sampler: evaluation
 
 wandb:
+  project: yaicon-3-5gs
   name: custom
   tags: [custom, 512x512]
+  mode: online
+  entity: pljh0906
 
 # ----- copy and paste from dtu.yaml
 
@@ -37,13 +41,15 @@ loss:
     weight: 0.05
 
 dataset:
-  image_shape: [640, 360]
+  image_shape: [360, 640]
   roots: [data/yaicon_book_dynamic]
   near: 0.2
   far: 3.1
   skip_bad_shape: false
   baseline_scale_bounds: false
   make_baseline_1: false
+  view_sampler:
+    index_path: assets/evaluation_index_custom.json
 
 test:
   eval_time_skip_steps: 1
