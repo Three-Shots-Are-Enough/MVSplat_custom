@@ -77,10 +77,6 @@ wandb:
   entity: <your-entity>
 ```
 
-```bash
-
-```
-
 ## Acknowledgements
 
 The project is largely based on [pixelSplat](https://github.com/dcharatan/pixelsplat) and has incorporated numerous code snippets from [UniMatch](https://github.com/autonomousvision/unimatch). Many thanks to these two projects for their excellent contributions!
