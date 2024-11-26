@@ -19,7 +19,6 @@
   <h3 align="center">ECCV 2024 Oral</h3>
   <h3 align="center"><a href="https://arxiv.org/abs/2403.14627">Paper</a> | <a href="https://donydchen.github.io/mvsplat/">Project Page</a> | <a href="https://drive.google.com/drive/folders/14_E_5R6ojOWnLSrSVLVEMHnTiKsfddjU">Pretrained Models</a> </h3>
 </p>
-<h4 align="center">.
 <h4 align="center">customized by yoomimi
 
 ## Installation
