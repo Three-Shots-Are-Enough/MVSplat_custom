@@ -1,7 +1,7 @@
 #!/bin/bash
 module load cuda/11.8
 
-############## home/pljh0906 되어있는 경로는 전부 본인 anaconda 경로로 수정해야 함
+############## home/pljh0906 Routes should be all redefined to your anaconda directory
 
 unset LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/home/pljh0906/anaconda3/envs/mvsplat/lib:$LD_LIBRARY_PATH
@@ -34,4 +34,4 @@ echo "Running sweep agent with ID"
 
 ### Example: wandb: Run sweep agent with: wandb agent pljh0906/yaicon-3-5gs/<project id>
 ### Run $CONDA_PYTHON_PATH -m wandb agent pljh0906/yaicon-3-5gs/<project id> ~~~
-$CONDA_PYTHON_PATH -m wandb agent pljh0906/yaicon-3-5gs/0x1czxlj --project yaicon-3-5gs --entity pljh0906 --count 100
+$CONDA_PYTHON_PATH -m wandb agent pljh0906/yaicon-3-5gs/abcdef --project yaicon-3-5gs --entity pljh0906 --count 100
